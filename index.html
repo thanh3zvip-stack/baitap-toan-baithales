@@ -1,1005 +1,520 @@
 <!DOCTYPE html>
-
 <html lang="vi">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Hoạt Động Nhóm - Bài Tập Toán 8</title>
-
   
-
   <!-- KaTeX CSS & JS -->
-
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-
   
-
   <!-- Supabase JS -->
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
-
   <style>
-
     :root {
-
       --primary: #4f46e5;
-
       --primary-hover: #4338ca;
-
       --bg-color: #f3f4f6;
-
       --card-bg: #ffffff;
-
       --border-color: #e5e7eb;
-
       --accent-blue: #eff6ff;
-
     }
-
-
 
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
     body { background-color: var(--bg-color); margin: 0; padding: 20px; color: #1f2937; }
 
-
-
     .header-title {
-
       text-align: center;
-
       color: #dc2626;
-
       font-size: 28px;
-
       font-weight: 800;
-
       margin-bottom: 20px;
-
       text-transform: uppercase;
-
       letter-spacing: 1px;
-
     }
-
-
 
     /* Layout 2 Cột */
-
     .main-grid {
-
       display: grid;
-
       grid-template-columns: 1fr 1.2fr;
-
       gap: 20px;
-
       max-width: 1200px;
-
       margin: 0 auto;
-
     }
-
-
 
     @media (max-width: 900px) {
-
       .main-grid { grid-template-columns: 1fr; }
-
     }
-
-
 
     .card {
-
       background: var(--card-bg);
-
       border-radius: 16px;
-
       padding: 24px;
-
       box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-
       border: 1px solid var(--border-color);
-
     }
-
-
 
     .card-title {
-
       font-size: 18px;
-
       font-weight: bold;
-
       color: #374151;
-
       display: flex;
-
       align-items: center;
-
       gap: 8px;
-
       margin-bottom: 16px;
-
     }
-
-
 
     /* Cột Trái: Đề Bài */
-
     .problem-content {
-
       font-size: 17px;
-
       line-height: 1.6;
-
     }
-
-
 
     .problem-item {
-
       display: flex;
-
       align-items: center;
-
       gap: 12px;
-
       margin: 12px 0;
-
     }
-
-
 
     .img-container {
-
       text-align: center;
-
       margin-top: 20px;
-
     }
-
-
 
     /* Cột Phải: Bài Làm */
-
     .user-info {
-
       background: var(--accent-blue);
-
       padding: 12px 16px;
-
       border-radius: 10px;
-
       margin-bottom: 15px;
-
       display: flex;
-
       gap: 10px;
-
       align-items: center;
-
     }
-
-
 
     .user-info input {
-
       flex: 1;
-
       padding: 8px 12px;
-
       border: 1px solid #cbd5e1;
-
       border-radius: 6px;
-
       outline: none;
-
       font-size: 15px;
-
     }
-
-
 
     .step-text {
-
       font-size: 16px;
-
       margin: 12px 0 8px 0;
-
     }
-
-
 
     .step-box {
-
       background: #f8fafc;
-
       border: 1px solid #e2e8f0;
-
       border-radius: 12px;
-
       padding: 16px;
-
       margin-bottom: 16px;
-
     }
-
-
 
     .math-row {
-
       display: flex;
-
       align-items: center;
-
       justify-content: center;
-
       gap: 8px;
-
       flex-wrap: wrap;
-
       margin: 8px 0;
-
     }
-
-
 
     /* Phân số tự dựng bằng CSS Flexbox */
-
     .fraction {
-
       display: inline-flex;
-
       flex-direction: column;
-
       vertical-align: middle;
-
       text-align: center;
-
       padding: 0 4px;
-
     }
-
-
 
     .fraction .numerator {
-
       border-bottom: 2px solid #1f2937;
-
       padding-bottom: 4px;
-
       display: flex;
-
       align-items: center;
-
       justify-content: center;
-
       gap: 6px;
-
     }
-
-
 
     .fraction .denominator {
-
       padding-top: 4px;
-
       display: flex;
-
       align-items: center;
-
       justify-content: center;
-
       gap: 6px;
-
     }
-
-
 
     /* Ô trống điền đáp án */
-
     .drop-zone {
-
       display: inline-flex;
-
       min-width: 55px;
-
       min-height: 40px;
-
       border: 2px dashed #6366f1;
-
       border-radius: 8px;
-
       background: #ffffff;
-
       align-items: center;
-
       justify-content: center;
-
       padding: 2px 8px;
-
       cursor: pointer;
-
       transition: all 0.2s;
-
       font-weight: bold;
-
     }
-
-
 
     .drop-zone:hover { background-color: #e0e7ff; }
-
     .drop-zone.correct { border: 2px solid #22c55e !important; background-color: #dcfce7 !important; }
-
     .drop-zone.wrong { border: 2px solid #ef4444 !important; background-color: #fee2e2 !important; }
 
-
-
     /* Ngân hàng đáp án */
-
     .bank-box {
-
       background: #f1f5f9;
-
       padding: 16px;
-
       border-radius: 12px;
-
       margin-top: 15px;
-
     }
-
-
 
     .bank-items {
-
       display: flex;
-
       flex-wrap: wrap;
-
       gap: 10px;
-
       margin-top: 10px;
-
       justify-content: center;
-
     }
-
-
 
     .item {
-
       background: #6366f1;
-
       color: white;
-
       padding: 8px 16px;
-
       border-radius: 8px;
-
       cursor: pointer;
-
       user-select: none;
-
       transition: all 0.2s;
-
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-
     }
-
-
 
     .item:hover { transform: translateY(-2px); background: #4f46e5; }
-
     .item.selected { outline: 3px solid #f59e0b; background: #3730a3; }
-
-
+    .item.used { visibility: hidden; pointer-events: none; }
 
     /* Nút Nộp Bài */
-
     .btn-submit {
-
       background: #22c55e;
-
       color: white;
-
       border: none;
-
       width: 100%;
-
       padding: 14px;
-
       border-radius: 10px;
-
       font-size: 16px;
-
       font-weight: bold;
-
       cursor: pointer;
-
       margin-top: 15px;
-
       transition: 0.2s;
-
     }
-
-
 
     .btn-submit:hover { background: #16a34a; }
 
-
-
     /* Bảng Xếp Hạng */
-
     .leaderboard-section {
-
       max-width: 1200px;
-
       margin: 25px auto 0 auto;
-
     }
-
-
 
     table {
-
       width: 100%;
-
       border-collapse: collapse;
-
       background: white;
-
       border-radius: 10px;
-
       overflow: hidden;
-
     }
 
-
-
     th, td { border: 1px solid var(--border-color); padding: 12px; text-align: center; }
-
     th { background: #e0e7ff; color: #3730a3; }
-
   </style>
-
 </head>
-
 <body>
-
-
 
 <div class="header-title">📜 HOẠT ĐỘNG NHÓM</div>
 
-
-
 <div class="main-grid">
-
   <!-- CỘT TRÁI: ĐỀ BÀI -->
-
   <div class="card">
-
     <div class="card-title">📝 ĐỀ BÀI</div>
-
     <div class="problem-content">
-
       <p>Cho tam giác <b>ABC</b>. Chứng minh rằng nếu <span class="math">MN \parallel BC</span> thì:</p>
-
       
-
       <div class="problem-item">
-
         <b>a)</b> <span class="math">\frac{AM}{AB} = \frac{AN}{AC}</span>
-
       </div>
-
       
-
       <div class="problem-item">
-
         <b>b)</b> <span class="math">\frac{MB}{AB} = \frac{NC}{AC}</span>
-
       </div>
-
-
 
       <div class="img-container">
-
         <svg width="260" height="180" viewBox="0 0 260 180" style="background:#fff; border-radius:8px;">
-
           <polygon points="110,20 20,160 240,160" fill="none" stroke="#2563eb" stroke-width="2"/>
-
           <line x1="65" y1="90" x2="175" y2="90" stroke="#2563eb" stroke-width="2"/>
-
           <text x="105" y="15" fill="#1e40af" font-weight="bold">A</text>
-
           <text x="5" y="168" fill="#1e40af" font-weight="bold">B</text>
-
           <text x="245" y="168" fill="#1e40af" font-weight="bold">C</text>
-
           <text x="45" y="95" fill="#1e40af" font-weight="bold">M</text>
-
           <text x="185" y="95" fill="#1e40af" font-weight="bold">N</text>
-
           <text x="200" y="85" fill="#1e40af" font-style="italic">d</text>
-
         </svg>
-
       </div>
-
     </div>
-
   </div>
-
-
 
   <!-- CỘT PHẢI: BÀI LÀM -->
-
   <div class="card">
-
     <div class="card-title">📝 BÀI LÀM</div>
 
-
-
     <div class="user-info">
-
       <label for="studentName"><b>Tên Nhóm:</b></label>
-
       <input type="text" id="studentName" placeholder="Nhập tên Nhóm (Ví dụ: Nhóm 1)...">
-
     </div>
-
-
 
     <!-- Bước 1 -->
-
     <div class="step-text">• Xét tam giác <b>ABC</b> có <span class="math">MN \parallel BC</span>.</div>
-
     <div class="math-row">
-
       • Suy ra: 
-
       <div class="drop-zone" data-ans="\frac{AM}{MB}">?</div>
-
       = 
-
       <div class="drop-zone" data-ans="\frac{AN}{NC}">?</div>
-
       <span>(định lí Thales)</span>
-
     </div>
-
-
 
     <!-- Bước 2 -->
-
     <div class="step-text">• Từ đó có: <span class="math">\frac{AM}{AN} = \frac{MB}{NC}</span></div>
 
-
-
     <!-- Bước 3 -->
-
     <div class="step-text">• Áp dụng tính chất dãy tỉ số bằng nhau, ta có:</div>
-
     <div class="step-box">
-
       <div class="math-row">
-
         <span class="math">\frac{AM}{AN} = \frac{MB}{NC} =</span>
-
         
-
         <!-- Phân số chứa ô trống điền đáp án -->
-
         <div class="fraction">
-
           <div class="numerator">
-
             <span class="math">AM +</span>
-
             <div class="drop-zone" data-ans="MB">?</div>
-
           </div>
-
           <div class="denominator">
-
             <span class="math">AN +</span>
-
             <div class="drop-zone" data-ans="NC">?</div>
-
           </div>
-
         </div>
 
-
-
         <span>=</span>
-
         <div class="drop-zone" data-ans="\frac{AB}{AC}">?</div>
-
       </div>
-
     </div>
-
-
 
     <!-- Kết luận -->
-
     <div class="step-text">• <b>Kết luận:</b></div>
-
     <div class="step-box">
-
       <div class="math-row">
-
         <span class="math">\frac{AM}{AB} =</span>
-
         <div class="drop-zone" data-ans="\frac{AN}{AC}">?</div>
-
         <span style="margin: 0 8px;">và</span>
-
         <span class="math">\frac{MB}{AB} =</span>
-
         <div class="drop-zone" data-ans="\frac{NC}{AC}">?</div>
-
       </div>
-
     </div>
-
-
 
     <!-- Ngân Hàng Đáp Án -->
-
     <div class="bank-box">
-
       <div style="font-weight: bold; font-size: 14px; color: #475569;">
-
         🎯 NGÂN HÀNG ĐÁP ÁN <small>(Chọn đáp án rồi bấm vào ô trống tương ứng)</small>
-
       </div>
-
       <div class="bank-items" id="bank">
-
         <div class="item" data-val="\frac{AM}{MB}"></div>
-
         <div class="item" data-val="\frac{AN}{NC}"></div>
-
         <div class="item" data-val="MB"></div>
-
         <div class="item" data-val="NC"></div>
-
         <div class="item" data-val="\frac{AB}{AC}"></div>
-
         <div class="item" data-val="\frac{AN}{AC}"></div>
-
         <div class="item" data-val="\frac{NC}{AC}"></div>
-
         <!-- Đáp án nhiễu -->
-
         <div class="item" data-val="\frac{AM}{AN}"></div>
-
         <div class="item" data-val="\frac{AC}{AB}"></div>
-
       </div>
-
     </div>
 
-
-
     <button class="btn-submit" id="submitBtn" onclick="checkAnswer()">CHECK / KIỂM TRA ĐÁP ÁN</button>
-
     <div id="resultBox" style="margin-top:15px; padding:10px; border-radius:8px; text-align:center; display:none;"></div>
-
   </div>
-
 </div>
-
-
 
 <!-- BẢNG XẾP HẠNG -->
-
 <div class="leaderboard-section">
-
   <div class="card">
-
     <div class="card-title">🏆 BẢNG XẾP HẠNG HỌC SINH / NHÓM</div>
-
     <table>
-
       <thead>
-
         <tr>
-
           <th>Hạng</th>
-
           <th>Tên Nhóm / Học Sinh</th>
-
           <th>Điểm Số</th>
-
           <th>Thời Gian Nộp</th>
-
         </tr>
-
       </thead>
-
       <tbody id="boardBody">
-
         <tr><td colspan="4">Đang tải dữ liệu...</td></tr>
-
       </tbody>
-
     </table>
-
   </div>
-
 </div>
 
-
-
 <script>
-
   // Cấu hình Supabase API
-
   const SUPABASE_URL = "https://hyllhascudmrpfelnukc.supabase.co";
-
   const SUPABASE_KEY = "sb_publishable_oOicirSiyYu1f2oCYyYrzA_qcPCL7nX";
-
   const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-
 
   let selectedItem = null;
 
-
-
   window.onload = function() {
-
     renderMath();
-
     initEvents();
-
     loadLeaderboard();
-
   };
 
-
-
   // Render công thức toán KaTeX
-
   function renderMath() {
-
     document.querySelectorAll('.math').forEach(el => {
-
       katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
-
     });
-
-
 
     document.querySelectorAll('.item').forEach(el => {
-
       let val = el.getAttribute('data-val');
-
       katex.render(val, el, { throwOnError: false, displayMode: false });
-
     });
-
   }
-
-
 
   // Khởi tạo sự kiện Chọn & Điền
-
   function initEvents() {
-
     document.querySelectorAll('.item').forEach(item => {
-
       item.addEventListener('click', function() {
-
         document.querySelectorAll('.item').forEach(i => i.classList.remove('selected'));
-
         selectedItem = this;
-
         this.classList.add('selected');
-
       });
-
     });
-
-
 
     document.querySelectorAll('.drop-zone').forEach(zone => {
-
       zone.addEventListener('click', function() {
-
         if (selectedItem) {
+          // Trả lại thẻ đáp án cũ nếu ô này đã có dữ liệu trước đó
+          let prevVal = this.getAttribute('data-user');
+          if (prevVal) {
+            let prevItem = Array.from(document.querySelectorAll('.item')).find(i => i.getAttribute('data-val') === prevVal && i.classList.contains('used'));
+            if (prevItem) prevItem.classList.remove('used');
+          }
 
+          // Gán đáp án mới vào ô
           let val = selectedItem.getAttribute('data-val');
-
           this.setAttribute('data-user', val);
-
           this.innerHTML = '';
-
           katex.render(val, this, { throwOnError: false, displayMode: false });
 
+          // Ẩn thẻ vừa được chọn khỏi ngân hàng
           selectedItem.classList.remove('selected');
-
+          selectedItem.classList.add('used');
           selectedItem = null;
-
         } else if (this.getAttribute('data-user')) {
+          // Khi bấm lại vào ô để bỏ chọn, trả thẻ lại ngân hàng
+          let val = this.getAttribute('data-user');
+          let matchedItem = Array.from(document.querySelectorAll('.item')).find(i => i.getAttribute('data-val') === val && i.classList.contains('used'));
+          if (matchedItem) matchedItem.classList.remove('used');
 
           this.removeAttribute('data-user');
-
           this.innerHTML = '?';
-
         }
-
       });
-
     });
-
   }
-
-
 
   // Kiểm tra kết quả & lưu vào Supabase
-
   async function checkAnswer() {
-
     let name = document.getElementById('studentName').value.trim();
-
     if (!name) {
-
       alert("Vui lòng nhập Tên Nhóm trước khi nộp bài!");
-
       return;
-
     }
-
-
 
     let zones = document.querySelectorAll('.drop-zone');
-
     let correct = 0;
 
-
-
     zones.forEach(z => {
-
       let userAns = z.getAttribute('data-user');
-
       let rightAns = z.getAttribute('data-ans');
-
       if (userAns === rightAns) {
-
         correct++;
-
         z.classList.remove('wrong');
-
         z.classList.add('correct');
-
       } else {
-
         z.classList.remove('correct');
-
         z.classList.add('wrong');
-
       }
-
     });
-
-
 
     let score = `${correct}/${zones.length}`;
-
     let now = new Date();
-
     let timeStr = now.getHours().toString().padStart(2,'0') + ":" + 
-
                   now.getMinutes().toString().padStart(2,'0') + ":" + 
-
                   now.getSeconds().toString().padStart(2,'0');
 
-
-
     let resBox = document.getElementById('resultBox');
-
     resBox.style.display = "block";
-
     resBox.style.background = correct === zones.length ? "#dcfce7" : "#fee2e2";
-
     resBox.style.color = correct === zones.length ? "#166534" : "#991b1b";
-
     resBox.innerHTML = `🎉 Nhóm <b>${name}</b> hoàn thành: <b>${correct}/${zones.length}</b> câu đúng!`;
 
-
-
     document.getElementById('submitBtn').disabled = true;
-
     document.getElementById('submitBtn').innerText = "ĐANG LƯU KẾT QUẢ...";
 
-
-
     await _supabase
-
       .from('leaderboard')
-
       .insert([{ name: name, score: score, time: timeStr, pts: correct }]);
 
-
-
     document.getElementById('submitBtn').innerText = "ĐÃ NỘP BÀI!";
-
     loadLeaderboard();
-
   }
-
-
 
   // Tải Bảng xếp hạng từ Supabase
-
   async function loadLeaderboard() {
-
     let { data, error } = await _supabase
-
       .from('leaderboard')
-
       .select('*')
-
       .order('pts', { ascending: false })
-
       .order('id', { ascending: true });
 
-
-
     let tbody = document.getElementById('boardBody');
-
     tbody.innerHTML = '';
 
-
-
     if (error || !data || data.length === 0) {
-
       tbody.innerHTML = '<tr><td colspan="4">Chưa có nhóm nào nộp bài.</td></tr>';
-
       return;
-
     }
 
-
-
     data.forEach((row, index) => {
-
       tbody.innerHTML += `<tr>
-
         <td><b>${index + 1}</b></td>
-
         <td><b>${row.name}</b></td>
-
         <td><span style="color:#16a34a; font-weight:bold;">${row.score}</span></td>
-
         <td>${row.time}</td>
-
       </tr>`;
-
     });
-
   }
-
 </script>
 
-
-
 </body>
-
 </html>
